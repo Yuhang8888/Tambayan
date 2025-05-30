@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Medarbejdere - Tambayan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}"><img src="/static/images/logo.jpg" alt="logo" width="80" /></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('medarbejder') }}">Medarbejder</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/vagtskema">Vagtskema</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/Beskeder">Beskeder</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dine_oplysninger') }}">Dine oplysninger</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('inventory') }}">Inventar</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .status-ok {
+            color: green;
+        }
+
+        .status-low {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ingredient Inventory</h1>
+    <p><a href="{{ url_for('inventory') }}">Go to Inventory</a> | <a href="{{ url_for('remove') }}">Go to Remove</a></p>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for msg in messages %}
+                <li>{{ msg }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for ingredient in ingredients %}
+        <tr>
+            <td>{{ ingredient.name }}</td>
+            <td>{{ ingredient.quantity }}</td>
+            <td>{{ ingredient.unit }}</td>
+            <td class="{{ 'status-ok' if ingredient.quantity >= ingredient.threshold else 'status-low' }}">
+                {{ 'OK' if ingredient.quantity >= ingredient.threshold else 'LOW' }}
+            </td>
+            <td>
+                <!-- Add Quantity Form -->
+                <form method="POST" action="{{ url_for('add_quantity', ingredient_id=ingredient.id) }}" style="display:inline-block;">
+                    <input type="number" step="0.01" name="amount" required placeholder="Add">
+                    <button type="submit">Add</button>
+                </form>
+
+                <!-- Deduct Quantity Form -->
+                <form method="POST" action="{{ url_for('deduct_quantity', ingredient_id=ingredient.id) }}" style="display:inline-block; margin-left:10px;">
+                    <input type="number" step="0.01" name="amount" required placeholder="Deduct">
+                    <button type="submit">Deduct</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="{{ url_for('inventory') }}">Go to Inventory</a> | <a href="{{ url_for('remove') }}">Go to Remove</a></p>
+</body>
+</html>
+
+    <!--Refresh button-->
+    <button onclick="refreshPage()">Refresh page</button>
+</body>
+</html>
